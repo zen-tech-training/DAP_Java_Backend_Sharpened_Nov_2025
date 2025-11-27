@@ -7,14 +7,14 @@ public class StockDto {
 	@Parameter(required = false)
 	private int id;
 	private String name;
-	private String market;
+	private String marketName;
 	private double price;
 	public StockDto() {}
 	public StockDto(int id, String name, String market, double price) {
 		super();
 		this.id = id;
 		this.name = name;
-		this.market = market;
+		this.marketName = market;
 		this.price = price;
 	}
 	public String getName() {
@@ -23,11 +23,11 @@ public class StockDto {
 	public void setName(String name) {
 		this.name = name;
 	}
-	public String getMarket() {
-		return market;
+	public String getMarketName() {
+		return marketName;
 	}
-	public void setMarket(String market) {
-		this.market = market;
+	public void setMarketName(String market) {
+		this.marketName = market;
 	}
 	public double getPrice() {
 		return price;
@@ -43,7 +43,7 @@ public class StockDto {
 	}
 	@Override
 	public String toString() {
-		return "StockDto [id=" + id + ", name=" + name + ", market=" + market + ", price=" + price + "]";
+		return "StockDto [id=" + id + ", name=" + name + ", market=" + marketName + ", price=" + price + "]";
 	}
 	
 }

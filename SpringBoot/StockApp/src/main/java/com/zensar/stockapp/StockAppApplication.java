@@ -2,8 +2,10 @@ package com.zensar.stockapp;
 
 import java.util.Arrays;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.Bean;
 
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
@@ -16,6 +18,11 @@ public class StockAppApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(StockAppApplication.class, args);
+	}
+	
+	@Bean
+	public ModelMapper getModelMapper() {
+		return new ModelMapper();
 	}
 
 	//@Bean

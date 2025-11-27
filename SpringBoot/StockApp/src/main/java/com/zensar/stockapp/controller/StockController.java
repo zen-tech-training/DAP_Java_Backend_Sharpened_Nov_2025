@@ -69,4 +69,40 @@ public class StockController {
 	public ResponseEntity<List<StockDto>> getAllStocks() {
 		return new ResponseEntity<List<StockDto>>(stockService.getAllStocks(), HttpStatus.OK);
 	}
+	
+	@GetMapping(value="/stock/name/{name}", produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<List<StockDto>> getStocksByName(@PathVariable("name") String name) {
+		return new ResponseEntity<List<StockDto>>(stockService.findByName(name), HttpStatus.OK);
+	}
+
+	@GetMapping(value="/stock/marketname/{marketname}", produces = MediaType.APPLICATION_JSON_VALUE)
+	public List<StockDto> getStocksByMarketName(@PathVariable("marketname") String marketname) {
+		return stockService.findByMarket(marketname);
+	}
+
+	@GetMapping(value="/stock/marketname/{marketname}/name/{name}", produces = MediaType.APPLICATION_JSON_VALUE)
+	public List<StockDto> getStocksByNameAndMarketName(@PathVariable("marketname") String marketname, @PathVariable("name") String name) {
+		return stockService.findByNameAndMarket(name, marketname);
+	}
+
+	@GetMapping(value="/stock/name/like/{name}", produces = MediaType.APPLICATION_JSON_VALUE)
+	public List<StockDto> getStocksByNameLike(@PathVariable("name") String name) {
+		return stockService.findByNameLike(name);
+	}
+
+	@GetMapping(value="/stock/name/sort/{sortType}", produces = MediaType.APPLICATION_JSON_VALUE)
+	public List<StockDto> getStocksOrderByName(@PathVariable("sortType") String sortType) {
+		return stockService.findByOrderByName(sortType);
+	}
+
+	@GetMapping(value="/stock/page/{startIndex}/{records}", produces = MediaType.APPLICATION_JSON_VALUE)
+	public List<StockDto> getStocksByPage(@PathVariable("startIndex") int startIndex, @PathVariable("records") int records) {
+		return stockService.findByPage(startIndex, records);
+	}
+	
+	@GetMapping(value="/stock/search", produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<List<StockDto>> getStocksBySearchText(@RequestParam(name="searchText", required=false)String searchText) {
+		return new ResponseEntity<List<StockDto>>(stockService.getStocksBySearchText(searchText), HttpStatus.OK);
+	}
+	
 }

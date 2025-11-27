@@ -1,0 +1,22 @@
+spring:
+  application:
+    name: EntityMappingDemo_3_4_5
+
+  datasource:
+    driverClassName: com.mysql.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/testdb?createDatabaseIfNotExist=true
+    username: root
+    password: Root@12345
+
+  jpa:
+    generate-ddl: true
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL8Dialect
+      
+server:
+  port: 7001
+  

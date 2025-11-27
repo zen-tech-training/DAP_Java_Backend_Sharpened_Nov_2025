@@ -4,7 +4,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import org.modelmapper.ModelMapper;
+import org.modelmapper.TypeMap;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.zensar.stockapp.dto.StockDto;
@@ -18,21 +23,30 @@ public class StockServiceImpl implements StockService {
 	@Autowired
 	StockRepository stockRepository;
 	
+	@Autowired
+	ModelMapper modelMapper;
+	
 	private List<StockDto> getStockDtoList(List<StockEntity> stockEntityList) {
 		List<StockDto> stockDtoList = new ArrayList<StockDto>();
+		TypeMap<StockEntity, StockDto> typeMap = 
+				modelMapper.typeMap(StockEntity.class, StockDto.class);
+		typeMap.addMapping((stockEntity)->stockEntity.getMarket(), StockDto::setMarketName);
 		for(StockEntity stockEntity: stockEntityList) {
-			stockDtoList.add(new StockDto(stockEntity.getId(), stockEntity.getName(), stockEntity.getMarket(), 
-					stockEntity.getPrice()));
+			StockDto stockDto = modelMapper.map(stockEntity, StockDto.class);
+			stockDtoList.add(stockDto);
 		}
 		return stockDtoList;
 	}
 	private StockDto getDto(StockEntity stockEntity) {
-		return new StockDto(stockEntity.getId(), stockEntity.getName(), stockEntity.getMarket(), 
-				stockEntity.getPrice());
+		StockDto stockDto = modelMapper.map(stockEntity, StockDto.class);
+		return stockDto;
 	}
 	private StockEntity getEntity(StockDto stockDto) {
-		return new StockEntity(stockDto.getName(), stockDto.getMarket(), 
-				stockDto.getPrice());
+		TypeMap<StockDto, StockEntity> typeMap = 
+				modelMapper.typeMap(StockDto.class, StockEntity.class);
+		typeMap.addMapping((dto)->dto.getMarketName(), StockEntity::setMarket);
+		StockEntity stockEntity = modelMapper.map(stockDto, StockEntity.class);
+		return stockEntity;
 	}
 	@Override
 	public List<StockDto> getAllStocks() {
@@ -62,7 +76,7 @@ public class StockServiceImpl implements StockService {
 		if(opStockEntity.isPresent()) { //stockId is correct
 			StockEntity stockEntity = opStockEntity.get();
 			stockEntity.setName(stockDto.getName());
-			stockEntity.setMarket(stockDto.getMarket());
+			stockEntity.setMarket(stockDto.getMarketName());
 			stockEntity.setPrice(stockDto.getPrice());
 			stockEntity = stockRepository.save(stockEntity);
 			return getDto(stockEntity);
@@ -86,4 +100,46 @@ public class StockServiceImpl implements StockService {
 		stocks.add(new StockDto(3, "Zensar", "BSE", 11000));
 	}
 	*/
+	@Override
+	public List<StockDto> findByMarket(String market) {
+		List<StockEntity> stockEntityList = stockRepository.findByMarket(market);
+		return getStockDtoList(stockEntityList);
+	}
+	@Override
+	public List<StockDto> findByName(String name) {
+		List<StockEntity> stockEntityList = stockRepository.findByName(name);
+		return getStockDtoList(stockEntityList);
+	}
+	@Override
+	public List<StockDto> findByNameAndMarket(String name, String market) {
+		List<StockEntity> stockEntityList = stockRepository.findByNameAndMarket(name, market);
+		return getStockDtoList(stockEntityList);
+	}
+	@Override
+	public List<StockDto> findByNameLike(String name) {
+		List<StockEntity> stockEntityList = stockRepository.findByNameContaining(name);
+		return getStockDtoList(stockEntityList);
+	}
+	@Override
+	public List<StockDto> findByOrderByName(String sortType) {
+		List<StockEntity> stockEntityList = null;
+		if(sortType!=null && sortType.equalsIgnoreCase("ASC"))
+			stockEntityList =  stockRepository.findByOrderByName();
+		else
+			stockEntityList =  stockRepository.findByOrderByNameDesc();
+		return getStockDtoList(stockEntityList);
+	}
+	@Override
+	public List<StockDto> findByPage(int startIndex, int records) {
+		Pageable pageable = PageRequest.of(startIndex, records);
+		
+		Page<StockEntity> page = stockRepository.findAll(pageable);
+		List<StockEntity> stockEntityList = page.getContent();
+		return getStockDtoList(stockEntityList);
+	}
+	@Override
+	public List<StockDto> getStocksBySearchText(String searchText) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }
