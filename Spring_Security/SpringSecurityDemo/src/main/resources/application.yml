@@ -1,0 +1,7 @@
+spring:
+  application:
+    name: SpringSecurityDemo
+#  security:
+#    user:
+#      name: anand
+#      password: anand123
