@@ -1,0 +1,11 @@
+spring:
+  application:
+    name: SpringAI_RAG_Dec_2025
+  ai:
+    ollama:
+      chat:
+        options:
+          model: mistral:latest
+      embedding:
+        options:
+          model: mistral:latest

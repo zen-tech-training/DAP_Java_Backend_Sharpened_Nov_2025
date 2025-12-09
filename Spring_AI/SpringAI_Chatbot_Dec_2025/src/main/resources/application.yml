@@ -1,0 +1,10 @@
+spring:
+  application:
+    name: SpringAI_Chatbot_Dec_2025
+  ai:
+    ollama:
+      chat:
+        options:
+          model: mistral:latest
+server:
+  port: 9090
